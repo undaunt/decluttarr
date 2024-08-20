@@ -55,7 +55,7 @@ async def queueCleaner(
         sys.exit()
 
     # Cleans up the downloads queue
-    logger.verbose("Cleaning queue on %s:", NAME)
+    logger.verbose('Cleaning queue on %s:', NAME)
     # Refresh queue:
     try:
         full_queue = await get_queue(BASE_URL, API_KEY, settingsDict, params={full_queue_param: True})
@@ -66,6 +66,17 @@ async def queueCleaner(
             deleted_downloads = Deleted_Downloads([])
             items_detected = 0
 
+            if settingsDict['SKIP_UNAVAILABLE_FILES']: 
+                await skip_unavailable_files( 
+                    settingsDict, 
+                    BASE_URL, 
+                    API_KEY, 
+                    NAME, 
+                    protectedDownloadIDs, 
+                    privateDowloadIDs, 
+                    arr_type
+                )
+                
             if settingsDict["REMOVE_FAILED"]:
                 items_detected += await remove_failed(
                     settingsDict,

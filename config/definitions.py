@@ -19,6 +19,7 @@ REMOVE_ORPHANS                  = get_config_value('REMOVE_ORPHANS',            
 REMOVE_SLOW                     = get_config_value('REMOVE_SLOW',                   'features',     False,  bool,   False)
 REMOVE_STALLED                  = get_config_value('REMOVE_STALLED',                'features',     False,  bool,   False)
 REMOVE_UNMONITORED              = get_config_value('REMOVE_UNMONITORED',            'features',     False,  bool,   False)
+SKIP_UNAVAILABLE_FILES          = get_config_value('SKIP_UNAVAILABLE_FILES',      'features',     False,  bool,   False)
 RUN_PERIODIC_RESCANS            = get_config_value('RUN_PERIODIC_RESCANS',          'features',     False,  dict,   {})
 
 # Feature Settings

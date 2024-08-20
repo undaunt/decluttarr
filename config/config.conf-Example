@@ -12,6 +12,7 @@ REMOVE_ORPHANS              = True
 REMOVE_SLOW                 = True
 REMOVE_STALLED              = True
 REMOVE_UNMONITORED          = True
+SKIP_UNAVAILABLE_FILES      = True
 RUN_PERIODIC_RESCANS        = {"SONARR": {"MISSING": true, "CUTOFF_UNMET": true, "MAX_CONCURRENT_SCANS": 3, "MIN_DAYS_BEFORE_RESCAN": 7}, "RADARR": {"MISSING": true, "CUTOFF_UNMET": true, "MAX_CONCURRENT_SCANS": 3, "MIN_DAYS_BEFORE_RESCAN": 7}}
 
 [feature_settings]

@@ -95,6 +95,8 @@ def showSettings(settingsDict):
     logger.info('%s | Removing slow downloads (%s)', str(settingsDict['REMOVE_SLOW']), 'REMOVE_SLOW')
     logger.info('%s | Removing stalled downloads (%s)', str(settingsDict['REMOVE_STALLED']), 'REMOVE_STALLED')
     logger.info('%s | Removing downloads belonging to unmonitored items (%s)', str(settingsDict['REMOVE_UNMONITORED']), 'REMOVE_UNMONITORED') 
+    logger.info('%s | Skipping files with <100%% availability (%s)', str(settingsDict['SKIP_UNAVAILABLE_FILES']), 'SKIP_UNAVAILABLE_FILES')     
+
     for arr_type, RESCAN_SETTINGS in settingsDict['RUN_PERIODIC_RESCANS'].items():
         logger.info('%s/%s (%s) | Search missing/cutoff-unmet items. Max queries/list: %s. Min. days to re-search: %s (%s)', RESCAN_SETTINGS['MISSING'],  RESCAN_SETTINGS['CUTOFF_UNMET'], arr_type, RESCAN_SETTINGS['MAX_CONCURRENT_SCANS'], RESCAN_SETTINGS['MIN_DAYS_BEFORE_RESCAN'], 'RUN_PERIODIC_RESCANS') 
     logger.info('') 
@@ -229,6 +231,20 @@ async def createQbitProtectionTag(settingsDict):
                 if not settingsDict['TEST_RUN']:
                     await rest_post(url=settingsDict['QBITTORRENT_URL']+'/torrents/createTags', data={'tags': settingsDict['NO_STALLED_REMOVAL_QBIT_TAG']}, headers={'content-type': 'application/x-www-form-urlencoded'}, cookies=settingsDict['QBIT_COOKIE'])
 
+async def setQbitUnwantedFolder(settingsDict):
+    # Creates the qBit Protection tag if not already present
+    if settingsDict['QBITTORRENT_URL']:
+        if settingsDict['SKIP_UNAVAILABLE_FILES']:
+            qBit_settings = await rest_get(settingsDict['QBITTORRENT_URL']+'/app/preferences',cookies=settingsDict['QBIT_COOKIE'])
+            if not qBit_settings['use_unwanted_folder']:
+                logger.info('Enabling the qBit setting \'Keep unselect files in ".unwanted" folder\'')
+                
+            if not settingsDict['NO_STALLED_REMOVAL_QBIT_TAG'] in current_tags:
+                if settingsDict['QBITTORRENT_URL']: 
+                    logger.info('Creating tag in qBittorrent: %s', settingsDict['NO_STALLED_REMOVAL_QBIT_TAG'])  
+                    if not settingsDict['TEST_RUN']:
+                        await rest_post(url=settingsDict['QBITTORRENT_URL']+'/appp/setPreferences', data={'use_unwanted_folder': True}, headers={'content-type': 'application/x-www-form-urlencoded'}, cookies=settingsDict['QBIT_COOKIE'])
+            exit()
 def showLoggerLevel(settingsDict):
     logger.info('#' * 50)
     if settingsDict['LOG_LEVEL'] == 'INFO':

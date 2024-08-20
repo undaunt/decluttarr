@@ -24,6 +24,7 @@ Feature overview:
 -   Automatically delete slow downloads, after they have been found to be slow multiple times in a row (& trigger download from another source)
 -   Automatically delete downloads belonging to radarr/sonarr/etc. items that are unmonitored
 -   Automatically delete downloads that failed importing since they are not a format upgrade (i.e. a better version is already present)
+- Automatically set file to not download if they are not 100% available (missing peers)
 
 You may run this locally by launching main.py, or by pulling the docker image.
 You can find a sample docker-compose.yml [here](#method-1-docker).
@@ -84,6 +85,7 @@ services:
       REMOVE_SLOW: True
       REMOVE_STALLED: True
       REMOVE_UNMONITORED: True
+      SKIP_UNAVAILABLE_FILES: True
       RUN_PERIODIC_RESCANS: '
         {
         "SONARR": {"MISSING": true, "CUTOFF_UNMET": true, "MAX_CONCURRENT_SCANS": 3, "MIN_DAYS_BEFORE_RESCAN": 7},
@@ -258,6 +260,16 @@ Steers which type of cleaning is applied to the downloads queue
 -   Type: Boolean
 -   Permissible Values: True, False
 -   Is Mandatory: No (Defaults to False)
+
+**SKIP_UNAVAILABLE_FILES**
+- Steers whether files within torrents are marked as 'not download' if they have less then 100% availabiltiy 
+- The torrent is not removed and will complete for the other files
+- After import, the *arr app will trigger a search for the files that were not downloaded
+- Note that this is only supported when qBittorrent is configured in decluttarr. 
+- Also note that this will turn on the setting 'Keep unselected files in ".unwanted" folder' in qBittorrent 
+- Type: Boolean
+- Permissible Values: True, False
+- Is Mandatory: No (Defaults to False)
 
 **RUN_PERIODIC_RESCANS**
 
